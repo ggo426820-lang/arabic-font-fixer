@@ -68,7 +68,7 @@ export function Navbar() {
             onClick={toggleTheme}
             aria-label={tr("common.theme")}
             className="grid size-9 place-items-center rounded-full bg-foreground/10 border border-border text-foreground transition-all hover:bg-foreground/20 hover:scale-105"
-            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            title={tr("common.theme")}
           >
             {theme === "dark" ? <Sun className="size-4 text-[#FFD000]" /> : <Moon className="size-4 text-[#FF4B35]" />}
           </button>
@@ -78,10 +78,10 @@ export function Navbar() {
             onClick={toggleLang}
             aria-label={tr("common.language")}
             className="flex h-9 items-center gap-1.5 rounded-full bg-foreground/10 border border-border px-3 text-xs font-extrabold text-foreground transition-all hover:bg-foreground/20 hover:scale-105"
-            title="Switch Language"
+            title={tr("common.language")}
           >
             <Globe className="size-3.5 text-[#FF4B35]" />
-            <span className="uppercase">{lang === "en" ? "AR" : "EN"}</span>
+            <span className="keep-latin uppercase">{lang === "en" ? "AR" : "EN"}</span>
           </button>
 
           {/* Social Icons: GitHub & LinkedIn */}
