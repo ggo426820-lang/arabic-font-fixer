@@ -461,13 +461,43 @@
 }
 
 /* Outside @layer base so it beats Tailwind font-family utilities
-   (font-sans / font-display) when the page is in Arabic. */
-:root[lang="ar"] :where(.font-display, .font-sans, .font-mono):not(.keep-latin):not(.keep-latin *),
-:root[lang="ar"] :where(h1, h2, h3, h4, h5, h6):not(.keep-latin):not(.keep-latin *) {
+   (font-sans / font-display / arbitrary font-['Oswald'] classes)
+   when the page is in Arabic. */
+:root[lang="ar"] *:not(.keep-latin):not(.keep-latin *) {
   font-family: var(--font-arabic);
 }
 
+:root[lang="ar"] body:not(.keep-latin) {
+  font-family: var(--font-arabic);
+  /* Cairo reads better with a touch more leading and no synthetic weight jumps */
+  line-height: 1.75;
+  font-optical-sizing: auto;
+}
+
+:root[lang="ar"] :where(h1, h2, h3, h4, h5, h6):not(.keep-latin):not(.keep-latin *) {
+  line-height: 1.35;
+  letter-spacing: 0;
+  word-spacing: 0.02em;
+}
+
+/* Latin fragments (brand, tech names, URLs, numbers) keep their Latin face
+   and their own LTR flow so punctuation doesn't jump sides. */
 :root[lang="ar"] .keep-latin,
 :root[lang="ar"] .keep-latin * {
   font-family: var(--font-display);
 }
+
+:root[lang="ar"] .keep-latin {
+  unicode-bidi: isolate;
+}
+
+/* Mixed Arabic/Latin paragraphs: isolate runs so trailing dots stay put */
+:root[lang="ar"] :where(p, li, span, h1, h2, h3, h4, blockquote) {
+  unicode-bidi: isolate;
+}
+
+/* Icons/arrows authored for LTR flip with the document direction */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
