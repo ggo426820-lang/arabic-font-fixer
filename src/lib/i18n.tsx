@@ -201,7 +201,37 @@ export const t: Dict = {
   "common.language": { en: "Toggle language", ar: "تبديل اللغة" },
   "common.menu": { en: "Menu", ar: "القائمة" },
   "common.home": { en: "Home", ar: "الرئيسية" },
+
+  "projects.index.reset": { en: "Reset Filters", ar: "إعادة تعيين الفلاتر" },
+  "projects.index.empty": {
+    en: "No projects found matching your search",
+    ar: "لا توجد مشاريع مطابقة لبحثك",
+  },
+  "projects.index.prev": { en: "Previous", ar: "السابق" },
+  "projects.index.next": { en: "Next", ar: "التالي" },
+  "projects.index.viewMode": { en: "View mode", ar: "طريقة العرض" },
+  "projects.index.pagination": { en: "Pagination", ar: "ترقيم الصفحات" },
+  "projects.index.all": { en: "All", ar: "الكل" },
+  "projects.sort.default": { en: "Featured", ar: "المميزة" },
+  "projects.sort.az": { en: "Title A–Z", ar: "العنوان: أ – ي" },
+  "projects.sort.za": { en: "Title Z–A", ar: "العنوان: ي – أ" },
+  "projects.sort.category": { en: "Category", ar: "التصنيف" },
+  "projects.sort.tech": { en: "Most tech", ar: "الأكثر تقنيات" },
+
+  "events.item.we3ds.name": { en: "WE3DS Company", ar: "شركة WE3DS" },
+  "events.item.we3ds.location": { en: "Tanta, EG", ar: "طنطا، مصر" },
+  "events.item.we3ds.topic": { en: "Senior Full Stack Developer", ar: "مطوّر متكامل أول" },
+  "events.item.freelance.name": { en: "Freelance Marketplace", ar: "أسواق العمل الحر" },
+  "events.item.freelance.location": { en: "Cairo, EG", ar: "القاهرة، مصر" },
+  "events.item.freelance.topic": { en: "Full Stack Developer", ar: "مطوّر متكامل" },
+  "events.item.platform.name": { en: "Multi-Tenant Platform", ar: "منصة متعددة المستأجرين" },
+  "events.item.platform.location": { en: "Enterprise, EG", ar: "قطاع المؤسسات، مصر" },
+  "events.item.platform.topic": { en: "300% Speed Optimization", ar: "تحسين السرعة بنسبة 300%" },
+  "events.item.degree.name": { en: "Computer Science B.Sc.", ar: "بكالوريوس علوم الحاسب" },
+  "events.item.degree.location": { en: "HTI University, EG", ar: "معهد HTI، مصر" },
+  "events.item.degree.topic": { en: "Degree Credential", ar: "مؤهل أكاديمي" },
 };
+
 
 interface I18nContextValue {
   lang: Lang;
