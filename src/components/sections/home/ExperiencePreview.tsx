@@ -3,35 +3,10 @@ import { MapPin, MessageSquare, ChevronRight, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 const eventsData = [
-  {
-    year: "2024",
-    iconText: "⚡",
-    name: "WE3DS Company",
-    location: "Tanta, EG",
-    topic: "Senior Full Stack Developer",
-  },
-  {
-    year: "2023",
-    iconText: "AR",
-    name: "Freelance Marketplace",
-    location: "Cairo, EG",
-    topic: "Full Stack Developer",
-  },
-  {
-    year: "2024",
-    iconText: "●",
-    name: "Multi-Tenant Platform",
-    location: "Enterprise, EG",
-    topic: "300% Speed Optimization",
-    featured: true,
-  },
-  {
-    year: "2021",
-    iconText: "❖",
-    name: "Computer Science B.Sc.",
-    location: "HTI University, EG",
-    topic: "Degree Credential",
-  },
+  { id: "we3ds", year: "2024", iconText: "⚡" },
+  { id: "freelance", year: "2023", iconText: "AR" },
+  { id: "platform", year: "2024", iconText: "●", featured: true },
+  { id: "degree", year: "2021", iconText: "❖" },
 ];
 
 export function ExperiencePreview() {
@@ -65,9 +40,9 @@ export function ExperiencePreview() {
 
         {/* Event Rows */}
         <div className="flex flex-col gap-4">
-          {eventsData.map(({ year, iconText, name, location, topic, featured }) => (
+          {eventsData.map(({ id, year, iconText, featured }) => (
             <div
-              key={name}
+              key={id}
               className={`flex flex-col sm:flex-row items-center justify-between gap-4 p-5 sm:p-6 rounded-[2rem] transition-all duration-300 ${
                 featured
                   ? "bg-foreground text-background shadow-[var(--shadow-glow)] scale-[1.02]"
@@ -75,7 +50,7 @@ export function ExperiencePreview() {
               }`}
             >
               <div className="flex items-center gap-6 sm:gap-8 w-full sm:w-auto">
-                <span className="font-['Oswald',sans-serif] text-sm font-bold opacity-80 min-w-10">
+                <span dir="ltr" className="font-['Oswald',sans-serif] text-sm font-bold opacity-80 min-w-10">
                   {year}
                 </span>
 
@@ -92,19 +67,19 @@ export function ExperiencePreview() {
                     featured ? "text-background" : "text-card-foreground"
                   }`}
                 >
-                  {name}
+                  {tr(`events.item.${id}.name`)}
                 </h3>
               </div>
 
               <div className="flex items-center gap-6 sm:gap-8 w-full sm:w-auto justify-between sm:justify-end">
                 <div className="flex items-center gap-1.5 text-xs font-bold opacity-90">
                   <MapPin className="size-3.5 text-primary" />
-                  <span>{location}</span>
+                  <span>{tr(`events.item.${id}.location`)}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5 text-xs font-bold opacity-90">
                   <MessageSquare className="size-3.5 text-primary" />
-                  <span>{topic}</span>
+                  <span>{tr(`events.item.${id}.topic`)}</span>
                 </div>
 
                 {featured ? (
