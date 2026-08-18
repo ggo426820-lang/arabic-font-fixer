@@ -10,6 +10,7 @@ import { Search, ChevronLeft, ChevronRight, LayoutGrid, Rows3, X, ArrowUpDown } 
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useI18n } from "@/lib/i18n";
+import { useLocalizedContent } from "@/lib/localize";
 import {
   Select,
   SelectContent,
@@ -43,17 +44,18 @@ export const Route = createFileRoute("/projects/")({
 });
 
 const SORTS = [
-  { value: "default", label: "Featured" },
-  { value: "az", label: "Title A–Z" },
-  { value: "za", label: "Title Z–A" },
-  { value: "category", label: "Category" },
-  { value: "tech", label: "Most tech" },
+  { value: "default", key: "projects.sort.default" },
+  { value: "az", key: "projects.sort.az" },
+  { value: "za", key: "projects.sort.za" },
+  { value: "category", key: "projects.sort.category" },
+  { value: "tech", key: "projects.sort.tech" },
 ] as const;
 
 type SortValue = (typeof SORTS)[number]["value"];
 
 export function ProjectsPage() {
   const { tr } = useI18n();
+  const { category: trCategory } = useLocalizedContent();
   const [filter, setFilter] = useState<(typeof projectFilters)[number]>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const deferredQuery = useDeferredValue(searchQuery);
@@ -128,13 +130,13 @@ export function ProjectsPage() {
                 {/* Search Box */}
                 <div className="relative min-w-0">
                   <label htmlFor="project-search" className="sr-only">
-                    Search projects
+                    {tr("projects.index.sort")}
                   </label>
                   <Search className="pointer-events-none absolute start-4 top-1/2 size-4 -translate-y-1/2 text-card-foreground/70" />
                   <input
                     id="project-search"
                     type="search"
-                    placeholder="Search by name, tech, client…"
+                    placeholder={tr("projects.index.searchPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="h-11 w-full rounded-xl border border-border bg-foreground/10 ps-11 pe-9 text-sm text-card-foreground placeholder:text-card-foreground/60 transition-all focus:border-foreground/40 focus:bg-foreground/15 focus:outline-none"
@@ -143,7 +145,7 @@ export function ProjectsPage() {
                     <button
                       type="button"
                       onClick={() => setSearchQuery("")}
-                      aria-label="Clear search"
+                      aria-label={tr("projects.index.clear")}
                       className="absolute end-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-card-foreground/70 hover:text-card-foreground transition-colors"
                     >
                       <X className="size-4" />
@@ -154,12 +156,12 @@ export function ProjectsPage() {
                 {/* Sort Selector */}
                 <div className="relative">
                   <label htmlFor="project-sort" className="sr-only">
-                    Sort projects
+                    {tr("projects.index.sort")}
                   </label>
                   <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
                     <SelectTrigger
                       id="project-sort"
-                      aria-label="Sort projects"
+                      aria-label={tr("projects.index.sort")}
                       className="h-11 w-full gap-2 rounded-xl border-border bg-foreground/10 px-3.5 text-sm font-bold text-card-foreground shadow-none transition-all hover:bg-foreground/15 focus:ring-0 md:w-48"
                     >
                       <div className="flex min-w-0 flex-1 items-center gap-2 whitespace-nowrap text-start">
@@ -174,7 +176,7 @@ export function ProjectsPage() {
                           value={s.value}
                           className="cursor-pointer rounded-lg text-sm text-card-foreground hover:bg-foreground/10 focus:bg-foreground/10"
                         >
-                          {s.label}
+                          {tr(s.key)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -184,13 +186,13 @@ export function ProjectsPage() {
                 {/* View Mode Toggle */}
                 <div
                   role="group"
-                  aria-label="View mode"
+                  aria-label={tr("projects.index.viewMode")}
                   className="flex h-11 shrink-0 items-center gap-1 rounded-xl border border-border bg-foreground/10 p-1"
                 >
-                  <ViewButton active={view === "grid"} onClick={() => setView("grid")} label="Grid view">
+                  <ViewButton active={view === "grid"} onClick={() => setView("grid")} label={tr("projects.index.grid")}>
                     <LayoutGrid className="size-4" />
                   </ViewButton>
-                  <ViewButton active={view === "list"} onClick={() => setView("list")} label="List view">
+                  <ViewButton active={view === "list"} onClick={() => setView("list")} label={tr("projects.index.list")}>
                     <Rows3 className="size-4" />
                   </ViewButton>
                 </div>
@@ -210,9 +212,11 @@ export function ProjectsPage() {
                       : "border border-border bg-foreground/10 text-foreground/90 hover:bg-foreground/20"
                   }`}
                 >
-                  {f}
+                  {f === "All" ? tr("projects.index.all") : trCategory(f)}
                   {counts[f] != null && (
-                    <span className="ms-1.5 text-[10px] opacity-80">({counts[f]})</span>
+                    <span className="ms-1.5 text-[10px] opacity-80" dir="ltr">
+                      ({counts[f]})
+                    </span>
                   )}
                 </button>
               ))}
@@ -236,7 +240,7 @@ export function ProjectsPage() {
                   className="inline-flex items-center gap-1.5 rounded-full bg-foreground/10 border border-border px-4 py-1.5 font-sans text-xs font-black tracking-wider uppercase text-foreground hover:bg-foreground/20 transition-colors"
                 >
                   <X className="size-3.5 text-primary" />
-                  Reset Filters
+                  {tr("projects.index.reset")}
                 </button>
               )}
             </div>
@@ -261,14 +265,14 @@ export function ProjectsPage() {
                 </motion.div>
 
                 {totalPages > 1 && (
-                  <nav aria-label="Pagination" className="flex flex-wrap items-center justify-center gap-3">
+                  <nav aria-label={tr("projects.index.pagination")} className="flex flex-wrap items-center justify-center gap-3">
                     <button
                       onClick={() => setCurrentPage(Math.max(1, page - 1))}
                       disabled={page === 1}
                       className="inline-flex items-center gap-2 rounded-xl bg-foreground/10 border border-border px-4 py-2 text-xs font-black tracking-wider text-foreground transition-all disabled:opacity-40 hover:enabled:bg-foreground/20"
                     >
                       <ChevronLeft className="size-4 text-primary rtl:rotate-180" />
-                      Previous
+                      {tr("projects.index.prev")}
                     </button>
 
                     <div className="flex items-center gap-2">
@@ -293,14 +297,14 @@ export function ProjectsPage() {
                       disabled={page === totalPages}
                       className="inline-flex items-center gap-2 rounded-xl bg-foreground/10 border border-border px-4 py-2 text-xs font-black tracking-wider text-foreground transition-all disabled:opacity-40 hover:enabled:bg-foreground/20"
                     >
-                      Next
+                      {tr("projects.index.next")}
                       <ChevronRight className="size-4 text-primary rtl:rotate-180" />
                     </button>
                   </nav>
                 )}
               </>
             ) : (
-              <EmptyState message="No projects found matching your search" />
+              <EmptyState message={tr("projects.index.empty")} />
             )}
           </div>
         </section>
