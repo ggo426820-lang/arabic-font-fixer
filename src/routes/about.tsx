@@ -58,9 +58,13 @@ function AboutPage() {
                 key={s.key}
                 className="rounded-[2rem] bg-card p-6 text-center border border-border shadow-lg"
               >
-                <div className="font-['Oswald',sans-serif] text-3xl sm:text-4xl font-bold text-card-foreground">
+                <div
+                  dir="ltr"
+                  className="font-['Oswald',sans-serif] text-3xl sm:text-4xl font-bold text-card-foreground"
+                >
                   {s.value}
                 </div>
+
                 <div className="font-sans text-[11px] font-black tracking-wider text-card-foreground/80 uppercase mt-1">
                   {tr(s.key)}
                 </div>
