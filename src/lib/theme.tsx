@@ -1,35 +1,62 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { flushSync } from "react-dom";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 
 type Theme = "dark" | "light";
 
 const STORAGE_KEY = "theme";
 
+/** Paint colors must stay in sync with --background in styles.css. */
+const PAINT: Record<Theme, string> = {
+  dark: "#FF4B35",
+  light: "#F8F6F0",
+};
+
 interface ThemeContextValue {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
+  toggleTheme: (origin?: { x: number; y: number }) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 /**
- * Runs before first paint (inlined in <head>), so the stored theme is applied
- * to <html> in the very first frame — no dark flash for light-mode visitors.
- * Keeps the paint background in sync with the CSS tokens in styles.css.
+ * Inlined in <head> (see __root.tsx) so it executes before the first paint:
+ * the stored theme is applied to <html> in the very first frame — no coral/dark
+ * flash for light-mode visitors on reload.
  */
 export const themeBootstrapScript = `(function(){try{
-var s=localStorage.getItem("${STORAGE_KEY}");
+var s=null;try{s=localStorage.getItem("${STORAGE_KEY}");}catch(e){}
 if(s!=="light"&&s!=="dark"){s=window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}
 var r=document.documentElement;
 r.classList.toggle("light",s==="light");
 r.style.colorScheme=s==="light"?"light":"dark";
-r.style.backgroundColor=s==="light"?"#F8F6F0":"#FF4B35";
+r.style.backgroundColor=s==="light"?"${PAINT.light}":"${PAINT.dark}";
 r.setAttribute("data-theme",s);
 }catch(e){}})();`;
 
+function applyTheme(theme: Theme) {
+  const root = document.documentElement;
+  root.classList.toggle("light", theme === "light");
+  root.style.colorScheme = theme === "light" ? "light" : "dark";
+  root.style.backgroundColor = PAINT[theme];
+  root.setAttribute("data-theme", theme);
+}
+
+/** What the bootstrap script already painted — the single source of truth on the client. */
 function readAppliedTheme(): Theme {
   if (typeof document === "undefined") return "dark";
+  const attr = document.documentElement.getAttribute("data-theme");
+  if (attr === "light" || attr === "dark") return attr;
   return document.documentElement.classList.contains("light") ? "light" : "dark";
+}
+
+function readStoredTheme(): Theme | null {
+  try {
+    const v = localStorage.getItem(STORAGE_KEY);
+    return v === "light" || v === "dark" ? v : null;
+  } catch {
+    return null;
+  }
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -37,19 +64,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // correct one, and this state syncs to it right after hydration.
   const [theme, setThemeState] = useState<Theme>("dark");
   const [hydrated, setHydrated] = useState(false);
+  // Only an explicit user choice is persisted, so visitors who never toggled
+  // keep following their OS preference.
+  const explicitRef = useRef(false);
 
   useEffect(() => {
-    setThemeState(readAppliedTheme());
+    const stored = readStoredTheme();
+    explicitRef.current = stored !== null;
+    setThemeState(stored ?? readAppliedTheme());
     setHydrated(true);
   }, []);
 
   useEffect(() => {
     if (!hydrated) return;
-    const root = document.documentElement;
-    root.classList.toggle("light", theme === "light");
-    root.style.colorScheme = theme === "light" ? "light" : "dark";
-    root.style.backgroundColor = theme === "light" ? "#F8F6F0" : "#FF4B35";
-    root.setAttribute("data-theme", theme);
+    applyTheme(theme);
+    if (!explicitRef.current) return;
     try {
       localStorage.setItem(STORAGE_KEY, theme);
     } catch {
@@ -62,13 +91,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined" || !window.matchMedia) return;
     const mq = window.matchMedia("(prefers-color-scheme: light)");
     const onChange = (e: MediaQueryListEvent) => {
-      let stored: string | null = null;
-      try {
-        stored = localStorage.getItem(STORAGE_KEY);
-      } catch {
-        /* ignore */
-      }
-      if (stored !== "light" && stored !== "dark") setThemeState(e.matches ? "light" : "dark");
+      if (!explicitRef.current) setThemeState(e.matches ? "light" : "dark");
     };
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
@@ -77,16 +100,82 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // Keep tabs/windows of the same site in sync.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY && (e.newValue === "light" || e.newValue === "dark")) {
+      if (e.key !== STORAGE_KEY) return;
+      if (e.newValue === "light" || e.newValue === "dark") {
+        explicitRef.current = true;
         setThemeState(e.newValue);
+      } else if (e.newValue === null) {
+        explicitRef.current = false;
       }
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const setTheme = (next: Theme) => setThemeState(next);
-  const toggleTheme = () => setThemeState((t) => (t === "dark" ? "light" : "dark"));
+  const setTheme = (next: Theme) => {
+    explicitRef.current = true;
+    setThemeState(next);
+  };
+
+  /**
+   * Toggles with a circular reveal growing from the clicked control
+   * (View Transitions API). Falls back to an instant swap where unsupported
+   * or when the visitor asked for reduced motion.
+   */
+  const toggleTheme = (origin?: { x: number; y: number }) => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    const doc =
+      typeof document !== "undefined"
+        ? (document as Document & {
+            startViewTransition?: (cb: () => void) => {
+              ready: Promise<void>;
+              finished: Promise<void>;
+            };
+          })
+        : null;
+
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    if (!doc?.startViewTransition || reduced || !origin) {
+      setTheme(next);
+      return;
+    }
+
+    const root = doc.documentElement;
+    root.classList.add("theme-transitioning");
+
+    const transition = doc.startViewTransition(() => {
+      flushSync(() => setTheme(next));
+    });
+
+    transition.ready
+      .then(() => {
+        const { x, y } = origin;
+        const radius = Math.hypot(
+          Math.max(x, window.innerWidth - x),
+          Math.max(y, window.innerHeight - y),
+        );
+        // Duration scales a little with how far the circle has to travel, so
+        // small viewports don't feel sluggish and large ones don't feel abrupt.
+        const duration = Math.round(Math.min(420, Math.max(260, radius * 0.28)));
+        root.animate(
+          {
+            clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
+          },
+          {
+            duration,
+            easing: "cubic-bezier(0.32, 0.72, 0, 1)",
+            fill: "forwards",
+            pseudoElement: "::view-transition-new(root)",
+          },
+        );
+      })
+      .catch(() => root.classList.remove("theme-transitioning"));
+
+    transition.finished.catch(() => {}).finally(() => root.classList.remove("theme-transitioning"));
+  };
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
