@@ -12,8 +12,8 @@ export function SkillsPreview() {
   const featured = skillGroups.slice(0, 4);
 
   return (
-    <section id="skills" className="scroll-mt-24 bg-background py-24">
-      <div className="mx-auto max-w-5xl px-5">
+    <section id="skills" className="section-shell section-y scroll-mt-24">
+      <div className="container-narrow">
         <SectionHeading title={tr("skills.title")} />
 
         <div className="grid gap-4 sm:grid-cols-2">

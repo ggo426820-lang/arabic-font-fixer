@@ -569,6 +569,57 @@
   }
 }
 
+/* --- Layout rhythm -------------------------------------------------------
+ * The single source of truth for page gutters, content widths and section
+ * vertical rhythm. No component may hand-roll `px-4 sm:px-8 md:px-12`,
+ * `mx-auto max-w-*` or an ad-hoc `py-16/20/24/28` again.
+ * ------------------------------------------------------------------------ */
+
+/* Responsive horizontal page gutter (replaces px-4 sm:px-8 md:px-12 / px-5). */
+@utility page-gutter {
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+
+/* Full-bleed band: owns the background + the gutter, centres nothing. */
+@utility section-shell {
+  width: 100%;
+  background-color: var(--background);
+  color: var(--foreground);
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+
+/* Centred content measures. Width only — never padding, never background. */
+@utility container-page {
+  width: 100%;
+  max-inline-size: 72rem;
+  margin-inline: auto;
+}
+
+@utility container-narrow {
+  width: 100%;
+  max-inline-size: 64rem;
+  margin-inline: auto;
+}
+
+@utility container-prose {
+  width: 100%;
+  max-inline-size: 56rem;
+  margin-inline: auto;
+}
+
+/* Section vertical rhythm — three steps, fluid, used by every band. */
+@utility section-y {
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+}
+
+@utility section-y-sm {
+  padding-block: clamp(2rem, 4vw, 3rem);
+}
+
+@utility section-y-lg {
+  padding-block: clamp(4rem, 8vw, 7rem);
+}
+
 
 :root {
   --radius: 1.25rem;
@@ -765,6 +816,17 @@
 .keep-latin {
   font-family: var(--type-font, var(--font-sans));
 }
+
+/* Gutters never stack. A band nested inside an already-gutted shell drops its
+   own horizontal padding, so a section reads the same on the home page
+   (full-bleed) and inside a contained page shell. Unlayered on purpose: it
+   must beat the `@utility` layer without `!important`. */
+.page-gutter :is(.page-gutter, .section-shell),
+.section-shell :is(.page-gutter, .section-shell) {
+  padding-inline: 0;
+}
+
+
 
 /* Arabic mode. These rules sit outside @layer base on purpose: unlayered CSS
    beats Tailwind's utilities layer, so they win over `font-sans`,

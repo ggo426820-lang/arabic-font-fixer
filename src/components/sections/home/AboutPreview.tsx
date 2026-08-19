@@ -6,8 +6,8 @@ import { PenTyping } from "@/components/ui/PenTyping";
 
 export function AboutPreview() {
   return (
-    <section className="w-full bg-background py-16 px-4 sm:px-8 md:px-12 text-foreground select-none">
-      <div className="mx-auto max-w-6xl">
+    <section className="section-shell section-y select-none">
+      <div className="container-page">
         <div className="relative rounded-2xl bg-card p-6 sm:p-10 lg:p-14 border border-border shadow-glow overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-center">
             {/* Left Column (5 cols) */}

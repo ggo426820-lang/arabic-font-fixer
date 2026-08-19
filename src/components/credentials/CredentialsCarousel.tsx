@@ -22,7 +22,7 @@ export function CredentialsCarousel() {
   return (
     <section
       id="awards"
-      className="w-full [content-visibility:auto] [contain-intrinsic-size:900px] bg-background px-4 py-14 text-foreground select-none sm:px-8 sm:py-20 md:px-12 lg:py-24"
+      className="section-shell section-y defer-paint select-none"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -32,7 +32,7 @@ export function CredentialsCarousel() {
         if (e.key === "ArrowLeft") (isRTL ? next : prev)();
       }}
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="container-page">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:grid-rows-[auto_1fr_auto] lg:items-stretch lg:gap-10">
           <CredentialSlideMeta slide={slide} activeIdx={activeIdx} total={total} reduce={reduce} />
 

@@ -67,7 +67,7 @@ export function NotFound() {
       contained={false}
       padded={false}
       mainRef={ref}
-      className="relative flex flex-col items-center justify-start overflow-hidden bg-background px-5 pb-12 pt-36"
+      className="section-shell relative flex flex-col items-center justify-start overflow-hidden pb-12 pt-36"
     >
       {/* ambient layer */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
