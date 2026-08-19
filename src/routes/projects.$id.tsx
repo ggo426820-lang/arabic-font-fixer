@@ -106,7 +106,7 @@ function ProjectDetail() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="mx-auto max-w-7xl px-5 sm:px-8"
+        className="container-page page-gutter"
       >
         <ProjectDetailHeader project={project} />
         <ProjectHighlights highlights={detail.highlights} />

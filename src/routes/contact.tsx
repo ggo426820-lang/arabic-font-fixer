@@ -64,7 +64,7 @@ function ContactPage() {
         />
       </div>
 
-      <section className="mb-8 py-6">
+      <section className="section-y-sm">
         <div className="grid gap-6 sm:grid-cols-3">
           {CHANNELS.map(({ Icon, labelKey, value, valueKey, href }) => (
             <div

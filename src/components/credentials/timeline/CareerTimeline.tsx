@@ -23,9 +23,9 @@ export function CareerTimeline() {
   return (
     <section
       id="events"
-      className="w-full bg-background px-4 py-20 text-foreground sm:px-8 md:px-12"
+      className="section-shell section-y"
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="container-narrow">
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={reduce ? {} : { opacity: 1, y: 0 }}

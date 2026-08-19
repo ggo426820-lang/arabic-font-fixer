@@ -22,7 +22,7 @@ export function CtaBand({
   children: ReactNode;
 }) {
   return (
-    <section className="pb-4 pt-10">
+    <section className="section-y-sm">
       <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-glow sm:p-10">
         <div className="grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_auto]">
           <div className="text-center md:text-start">

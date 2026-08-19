@@ -42,8 +42,8 @@ export function Contact({ showHeading = true }: { showHeading?: boolean } = {}) 
     "w-full rounded-xl border border-border bg-foreground/10 px-4 py-3 text-foreground outline-none transition-colors placeholder:text-foreground/50 focus:border-primary/60 focus:bg-foreground/15";
 
   return (
-    <section id="contact" className="scroll-mt-24 py-28">
-      <div className="mx-auto max-w-5xl px-5">
+    <section id="contact" className="section-shell section-y-lg scroll-mt-24">
+      <div className="container-narrow">
         {showHeading && <SectionHeading title={tr("contact.title")} />}
         <Reveal>
           <p className="mb-10 text-center text-foreground/70">{tr("contact.subtitle")}</p>

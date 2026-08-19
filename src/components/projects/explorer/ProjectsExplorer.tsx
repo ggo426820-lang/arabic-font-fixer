@@ -15,8 +15,8 @@ export function ProjectsExplorer() {
   const explorer = useProjectsExplorer();
 
   return (
-    <section className="pb-16 pt-24 md:pb-20 md:pt-28">
-      <div className="mx-auto max-w-6xl px-5">
+    <section className="section-shell section-y pt-24 md:pt-28">
+      <div className="container-page">
         <Reveal>
           <header className="mb-8 max-w-2xl text-center md:text-start">
             <span className="eyebrow rounded-xl bg-foreground/10 px-3 py-1 text-primary border border-border inline-block mb-2">

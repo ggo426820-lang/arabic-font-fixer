@@ -55,9 +55,9 @@ export function ExperiencePreview() {
   return (
     <section
       id="events"
-      className="w-full bg-background py-20 px-4 sm:px-8 md:px-12 text-foreground"
+      className="section-shell section-y"
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="container-narrow">
         <SectionHeading title={tr("events.title")} description={tr("events.desc")} />
 
         {/* Tabs */}

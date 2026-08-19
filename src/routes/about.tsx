@@ -41,7 +41,7 @@ function AboutPage() {
         description={tr("about.page.desc")}
       />
 
-      <section className="py-6">
+      <section className="section-y-sm">
         <LottieAside src="/lottie/about-side.lottie" size="max-w-md">
           <div className="grid grid-cols-2 gap-4">
             {STATS.map((stat) => (
@@ -59,7 +59,7 @@ function AboutPage() {
         </LottieAside>
       </section>
 
-      <section className="py-12">
+      <section className="section-y">
         <SectionHeading title={tr("about.page.approach")} />
         <div className="grid gap-6 sm:grid-cols-2">
           {PRINCIPLES.map((principle) => (
