@@ -817,6 +817,17 @@
   font-family: var(--type-font, var(--font-sans));
 }
 
+/* Gutters never stack. A band nested inside an already-gutted shell drops its
+   own horizontal padding, so a section reads the same on the home page
+   (full-bleed) and inside a contained page shell. Unlayered on purpose: it
+   must beat the `@utility` layer without `!important`. */
+.page-gutter :is(.page-gutter, .section-shell),
+.section-shell :is(.page-gutter, .section-shell) {
+  padding-inline: 0;
+}
+
+
+
 /* Arabic mode. These rules sit outside @layer base on purpose: unlayered CSS
    beats Tailwind's utilities layer, so they win over `font-sans`,
    `tracking-*` and `uppercase` WITHOUT `!important` — that keeps the cascade
